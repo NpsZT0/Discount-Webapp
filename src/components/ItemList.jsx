@@ -8,15 +8,18 @@ function ItemList({ cart, removeItem }) {
           key={id}
           className={
             id === cart.length - 1
-              ? "flex justify-between p-2"
-              : "flex justify-between p-2 border-b border-solid"
+              ? "grid grid-cols-3 p-2 items-center"
+              : "grid grid-cols-3 p-2 border-b border-solid items-center"
           }
         >
-          <h4>{product.name}</h4>
-          <div className="flex">
+          <h6 className="text-sm lg:text-base">{product.name}</h6>
+          <p className="text-xs text-center">{product.category}</p>
+          <div className="flex justify-end">
+            <h6 className="flex items-center text-xs lg:text-base">
             {product.price} ฿
+            </h6>
             <button
-              className="p-1 py-1 ml-2 btn btn-ghost btn-sm"
+              className="p-0 py-0 ml-2 btn btn-ghost btn-sm"
               onClick={() => removeItem(id)}
             >
               <svg
@@ -25,7 +28,7 @@ function ItemList({ cart, removeItem }) {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-4 h-4"
+                className="w-3 h-3 lg:w-4 lg:h-4"
               >
                 <path
                   strokeLinecap="round"

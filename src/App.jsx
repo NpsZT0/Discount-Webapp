@@ -116,26 +116,39 @@ function App() {
 
   const applyDiscount = async () => {
     let resultPrice = totalPrice;
-    console.log("before", resultPrice)
+    console.log("before", resultPrice);
 
     // Coupon
     if (campaigns[selectedCoupon].name === "Fixed amount") {
       resultPrice -= 50;
+      console.log("after Coupon", resultPrice, "discount", 50);
     } else if (campaigns[selectedCoupon].name === "Percentage discount") {
       resultPrice -= (totalPrice * 10) / 100;
+      console.log(
+        "after Coupon",
+        resultPrice,
+        "discount",
+        (totalPrice * 10) / 100
+      );
     }
-    console.log("after Coupon", resultPrice)
 
     // On Top
     if (campaigns[selectedOnTop].name === "Percentage discount by Clothing") {
       const clothingPrice = cart.reduce((prevVal, product) => {
+        // console.log("product", product.category, product.price)
         if (product.category === "Clothing") {
           return prevVal + product.price;
         } else {
-          return 0;
+          return prevVal;
         }
       }, 0);
       resultPrice -= (clothingPrice * 15) / 100;
+      console.log(
+        "after On Top",
+        resultPrice,
+        "discount",
+        (clothingPrice * 15) / 100
+      );
     } else if (
       campaigns[selectedOnTop].name === "Percentage discount by Accessories"
     ) {
@@ -147,18 +160,29 @@ function App() {
         }
       }, 0);
       resultPrice -= (accessoriesPrice * 10) / 100;
+      console.log(
+        "after On Top",
+        resultPrice,
+        "discount",
+        (accessoriesPrice * 10) / 100
+      );
     } else if (campaigns[selectedOnTop].name === "Discount by points") {
       const twentyPercent = totalPrice * 0.2;
       resultPrice -= myPoints > twentyPercent ? totalPrice : myPoints;
+      console.log(
+        "after On Top",
+        resultPrice,
+        "discount",
+        myPoints > twentyPercent ? totalPrice : myPoints
+      );
     }
-    console.log("after On Top", resultPrice)
 
     // Seasonal
     if (campaigns[selectedSeasonal].name === "Special campaigns") {
       const discount = Math.floor(resultPrice / 3000) * 40;
       resultPrice -= discount;
+      console.log("after Seasonal", resultPrice, "discount", discount);
     }
-    console.log("after Seasonal", resultPrice)
     setResultPrice(resultPrice);
   };
 
@@ -183,35 +207,37 @@ function App() {
   useEffect(() => {}, [totalPrice]);
 
   return (
-    <div className="box-border h-screen w-vw">
+    <div className="box-border h-vh w-vw">
       <Navbar
         itemsAmount={cart.length}
         setCartModal={setCartModal}
         cartModal={cartModal}
       />
-      <main className="grid gap-2 p-8 mx-auto md:grid-cols-3 lg:grid-cols-5 md:gap-4 lg:gap-8">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="p-4 rounded-md bg-gray-300 shadow-md 
+      <div className="h-screen">
+        <main className="grid gap-2 p-8 mx-auto md:grid-cols-3 lg:grid-cols-5 md:gap-4 lg:gap-8">
+          {products.map((product) => (
+            <div
+              key={product.id}
+              className="p-4 rounded-md bg-gray-300 shadow-md 
           transition ease-in-out delay-150 hover:scale-[1.03] duration-500 space-y-2"
-          >
-            <div className="flex justify-between">
-              <h4 className="text-xl font-bold text-gray-700">
-                {product.name}
-              </h4>
-              <p>{product.price} ฿</p>
-            </div>
-            <div className="text-sm text-gray-500">{product.category}</div>
-            <button
-              className="btn btn-success btn-sm "
-              onClick={() => addToCart(product.id)}
             >
-              Add to cart
-            </button>
-          </div>
-        ))}
-      </main>
+              <div className="flex justify-between">
+                <h4 className="text-xl font-bold text-gray-700">
+                  {product.name}
+                </h4>
+                <p>{product.price} ฿</p>
+              </div>
+              <div className="text-sm text-gray-500">{product.category}</div>
+              <button
+                className="btn btn-success btn-sm "
+                onClick={() => addToCart(product.id)}
+              >
+                Add to cart
+              </button>
+            </div>
+          ))}
+        </main>
+      </div>
 
       <dialog id="my_modal" className="modal">
         <section className="modal-box h-[80%] overflow-y-hidden">
@@ -252,10 +278,7 @@ function App() {
               />
             </section>
             <section className="mt-4">
-              <h5 className="text-lg font-semibold">
-                Summarized
-                {campaigns.length > 0 ? "campaigns" : "campaign"}
-              </h5>
+              <h5 className="text-lg font-semibold">Summarized</h5>
               <section className="flex justify-between">
                 <p className="text-sm font-semibold text-gray-600">
                   Total price
@@ -264,43 +287,43 @@ function App() {
               </section>
               {selectedCoupon !== 0 && (
                 <section className="flex justify-between">
-                  <p className="text-sm font-semibold text-gray-600">
+                  <p className="text-sm font-semibold text-gray-600 truncate">
                     Coupon discount
                   </p>
-                  <p className="text-sm text-red-400">
+                  <p className="text-sm text-red-400 truncate">
                     {campaigns[selectedCoupon].discount}
                   </p>
                 </section>
               )}
               {selectedOnTop !== 0 && (
                 <section className="flex justify-between">
-                  <p className="text-sm font-semibold text-gray-600">
+                  <p className="text-sm font-semibold text-gray-600 truncate">
                     On Top discount
                   </p>
-                  <p className="text-sm text-red-400">
+                  <p className="text-sm text-red-400 truncate">
                     {campaigns[selectedOnTop].discount}
                   </p>
                 </section>
               )}
               {selectedSeasonal !== 0 && (
                 <section className="flex justify-between">
-                  <p className="text-sm font-semibold text-gray-600">
+                  <p className="text-sm font-semibold text-gray-600 truncate">
                     Seasonal discount
                   </p>
-                  <p className="text-sm text-red-400">
+                  <p className="text-sm text-red-400 truncate">
                     {campaigns[selectedSeasonal].discount}
                   </p>
                 </section>
               )}
               <section className="flex justify-between">
-                <p className="text-sm font-semibold text-gray-600">
+                <p className="text-sm font-semibold text-gray-600 truncate">
                   Result price
                 </p>
                 <p className="text-sm">{resultPrice} ฿</p>
               </section>
             </section>
           </section>
-          <form method="dialog modal-action">
+          <form method="dialog" class="modal-backdrop">
             <button className="btn">Close</button>
           </form>
         </section>
